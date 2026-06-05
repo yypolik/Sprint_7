@@ -15,3 +15,24 @@ def clean_courier():
         if login_response.status_code == 200:
             courier_id = login_response.json().get("id")
             CourierAPI.delete(courier_id)
+
+@pytest.fixture
+def generate_courier_data_and_delete():
+    data = CourierData.generate_full_courier_payload()
+    
+    backup_login = data["login"]
+    backup_password = data["password"]
+    
+    yield data
+    
+    login_data = CourierData.login_payload(backup_login, backup_password)
+    login_response = CourierAPI.login(login_data)
+    
+    if login_response.status_code == 200:
+        courier_id = login_response.json().get("id")
+        CourierAPI.delete(courier_id)
+
+@pytest.fixture
+def already_registered_courier(generate_courier_data_and_delete):
+    CourierAPI.create(generate_courier_data_and_delete)
+    return generate_courier_data_and_delete

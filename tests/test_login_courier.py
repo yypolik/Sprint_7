@@ -15,12 +15,12 @@ class TestLoginCourier:
         assert "id" in response.json()
 
     @allure.title("Ошибка авторизации, если не передано одно из обязательных полей")
-    @pytest.mark.parametrize("missing_field", CourierData.MISSING_FIELDS_LOGIN)
-    def test_login_missing_fields(self, clean_courier, missing_field):
+    @pytest.mark.parametrize("missing_field, expected_status", CourierData.LOGIN_MISSING_FIELDS_DATA)
+    def test_login_missing_fields(self, clean_courier, missing_field, expected_status):
         data = CourierData.login_payload(clean_courier[0], clean_courier[1])
         data.pop(missing_field)
         response = CourierAPI.login(data)
-        assert response.status_code in [400, 504]
+        assert response.status_code == expected_status
 
     @allure.title("Ошибка авторизации, если указан неверный пароль или логин")
     def test_login_wrong_credentials(self, clean_courier):

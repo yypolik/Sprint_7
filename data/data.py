@@ -4,6 +4,11 @@ class CourierData:
     MISSING_FIELDS_CREATION = ["login", "password"]
     MISSING_FIELDS_LOGIN = ["login", "password"]
 
+    LOGIN_MISSING_FIELDS_DATA = [
+        ("login", 400),
+        ("password", 504)
+    ]
+    
     @staticmethod
     def generate_full_courier_payload():
         return {
